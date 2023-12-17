@@ -17,17 +17,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }
 
-            function openSpace() {
+            async function isFreshWindow() {
+                // Checks if the current window has no real tabs
+                // (fresh windows can be used instead of making a new windoow)
+                return new Promise((resolve, reject) => {
+                    chrome.tabs.query({lastFocusedWindow: true}).then(currentTabs => {
+                        console.log(`Found tabs in last focused window:`);
+                        console.log(currentTabs);
+
+                        if (currentTabs.length == 2 && currentTabs[0].url == "chrome://newtab/") {
+                            resolve(currentTabs);
+                        } else {
+                            resolve(false);
+                        }
+                    });
+                });
+            }
+
+            async function openSpace() {
                 const selectedSpace = list.options[list.selectedIndex]?.value;
                 if (selectedSpace) {
                     const space = spaces[selectedSpace]
 
-                    chrome.windows.create({
-                        url: space.map(tab => tab.url),
-                        focused: true
-                    });
+                    if (await isFreshWindow()) {
+                        // Insert tabs into current window
+                        space.map(tab => tab.url).forEach(url => {
+                            chrome.tabs.create({
+                                url: url
+                            });
+                        });
+                        chrome.tabs.remove(fresh.map(tab => tab.id), (removeresult) => {
+                            console.log(`Removed with result:`);
+                            console.log(removeresult);
+                        });
+                    } else {
+                        // Create tabs in a new window
+                        chrome.windows.create({
+                            url: space.map(tab => tab.url),
+                            focused: true
+                        });
 
-                    chrome.tabs.remove(activeTabs[0].id);
+                        chrome.tabs.remove(activeTabs[0].id);
+                    }
+
                 } else {
                     console.error(`NO Selected space: ${selectedSpace}`);
                 }
