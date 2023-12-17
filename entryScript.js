@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') {
             var spaceName = input.value;
             document.getElementById('output').textContent = "You enetered: " + spaceName;
-            console.log(`User entered this: ${spaceName}`);
 
             // Get the current tab id
             chrome.tabs.query({active: true, lastFocusedWindow: true}, (activeTabs) => {
@@ -29,11 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         chrome.storage.local.set({
                             'user-spaces': newCopy
                         }, () => {
-                            chrome.storage.local.get('user-spaces', (result) => {
-                                console.log(`PULLED FROM LOCAL STORAGE FOR user-spaces:`);
-                                console.log(result);
-                            });
-
                             // Close the save tab
                             chrome.tabs.remove(activeTabs[0].id);
                         });

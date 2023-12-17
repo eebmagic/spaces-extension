@@ -20,10 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             function openSpace() {
                 const selectedSpace = list.options[list.selectedIndex]?.value;
                 if (selectedSpace) {
-                    console.log(`Selected space: ${selectedSpace}`);
                     const space = spaces[selectedSpace]
-                    console.log(`Opening for space: ${selectedSpace}`);
-                    console.log(space);
 
                     chrome.windows.create({
                         url: space.map(tab => tab.url),
@@ -32,28 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     chrome.tabs.remove(activeTabs[0].id);
                 } else {
-                    console.log(`NO Selected space: ${selectedSpace}`);
+                    console.error(`NO Selected space: ${selectedSpace}`);
                 }
             }
 
             function deleteSpace() {
                 const selectedSpace = list.options[list.selectedIndex]?.value;
                 if (selectedSpace) {
-                    console.log(`Selected space: ${selectedSpace}`);
                     const space = spaces[selectedSpace]
-                    console.log(`Deleting for space: ${selectedSpace}`);
-                    console.log(space);
 
                     const confirmation = window.confirm(`Are you sure you want to delete space: ${selectedSpace} ?`)
                     if (confirmation) {
-                        console.log(`USER WANTS TO DELETE: ${confirmation} ${selectedSpace}`);
                         delete spaces[selectedSpace];
                         chrome.storage.local.set({'user-spaces': spaces});
                         updateList();
                     }
-
                 } else {
-                    console.log(`NO Selected space: ${selectedSpace}`);
+                    console.error(`NO Selected space: ${selectedSpace}`);
                 }
             }
 
