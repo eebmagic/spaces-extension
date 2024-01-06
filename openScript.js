@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     chrome.tabs.query({active: true, lastFocusedWindow: true}).then(activeTabs => {
-        chrome.storage.local.get('user-spaces', (result) => {
+        chrome.storage.sync.get('user-spaces', (result) => {
             const spaces = result['user-spaces'] || {};
 
             const list = document.getElementById('spacesDatalist');
@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             function updateList() {
                 list.innerHTML = '';
+                console.log(`Updating list with spaces:`);
+                console.log(JSON.stringify(spaces));
                 Object.keys(spaces).forEach((name, index) => {
                     const listItem = document.createElement('option');
                     listItem.value = name;
@@ -38,8 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const selectedSpace = list.options[list.selectedIndex]?.value;
                 if (selectedSpace) {
                     const space = spaces[selectedSpace]
+                    const fresh = await isFreshWindow();
 
-                    if (await isFreshWindow()) {
+                    if (fresh) {
                         // Insert tabs into current window
                         space.map(tab => tab.url).forEach(url => {
                             chrome.tabs.create({
@@ -73,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const confirmation = window.confirm(`Are you sure you want to delete space: ${selectedSpace} ?`)
                     if (confirmation) {
                         delete spaces[selectedSpace];
-                        chrome.storage.local.set({'user-spaces': spaces});
+                        chrome.storage.sync.set({'user-spaces': spaces});
                         updateList();
                     }
                 } else {
