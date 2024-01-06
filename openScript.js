@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     chrome.tabs.query({active: true, lastFocusedWindow: true}).then(activeTabs => {
         chrome.storage.local.get('user-spaces', (result) => {
-            const spaces = result['user-spaces'];
+            const spaces = result['user-spaces'] || {};
 
             const list = document.getElementById('spacesDatalist');
             list.focus();
