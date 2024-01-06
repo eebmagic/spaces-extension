@@ -20,16 +20,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     // Store locally
-                    chrome.storage.local.get('user-spaces', (userSpaces) => {
+                    // chrome.storage.local.get('user-spaces', (userSpaces) => {
+                    chrome.storage.sync.get('user-spaces', (userSpaces) => {
                         const newCopy = {
                             ...userSpaces['user-spaces']
                         };
                         newCopy[spaceName] = filtered;
-                        chrome.storage.local.set({
+                        console.log(`Updating spaces in sync storage to:`);
+                        console.log(JSON.stringify(newCopy, null, 2))
+                        // chrome.storage.local.set({
+                        chrome.storage.sync.set({
                             'user-spaces': newCopy
                         }, () => {
                             // Close the save tab
-                            chrome.tabs.remove(activeTabs[0].id);
+                            // chrome.tabs.remove(activeTabs[0].id);
                         });
 
                     });
