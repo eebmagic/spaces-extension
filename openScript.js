@@ -41,8 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const selectedSpace = list.options[list.selectedIndex]?.value;
                 if (selectedSpace) {
                     const space = spaces[selectedSpace]
+                    const fresh = await isFreshWindow();
 
-                    if (await isFreshWindow()) {
+                    if (fresh) {
                         // Insert tabs into current window
                         space.map(tab => tab.url).forEach(url => {
                             chrome.tabs.create({

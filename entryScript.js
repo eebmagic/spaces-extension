@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             'user-spaces': newCopy
                         }, () => {
                             // Close the save tab
-                            // chrome.tabs.remove(activeTabs[0].id);
+                            chrome.tabs.remove(activeTabs[0].id);
                         });
 
                     });
